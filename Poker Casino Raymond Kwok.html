@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<!--Raymond Kwok-->
+<html>
+	<head>
+		<title></title>
+		<style>		
+		body
+		{
+			background-image: url("card images/pokerTable.jpg");
+			background-size: auto;
+			background-repeat: no-repeat;
+			cursor: default;
+		}
+		
+		#theTitle
+		{
+			font: bold 40pt Calibri;
+			color: orange;
+			text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+			text-align: center;
+			padding: 1%;
+		}		
+
+		#game_status
+		{
+			font: bold 36pt Calibri;
+			color: orange;
+			text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+			text-align: center;
+		}
+		
+		#theTable span
+		{
+			padding: 2%;
+			display: inline-block;
+			margin: auto;	
+			vertical-align: top;
+			
+		}
+		
+		#theTable 
+		{
+			display: inline-block;
+			padding-left: 2%;
+			padding-right: 2%;
+			float: left;
+			
+		}
+
+		#pokerboard
+		{
+			display: inline-block;
+			float: left;
+
+		}
+				
+		button
+		{	
+			font: bold;
+			font-size: 25px;
+			cursor: pointer;
+			color: black;
+		}
+		
+		#comboTable
+		{
+			border: solid thick black;
+			padding: 1%;
+			background-color: white;			
+		}
+		
+		#comboTable th
+		{
+			text-align: center;
+			font-size: 25px;
+		}
+		
+		#comboTable td
+		{
+			border: solid thick black;
+			padding: 10px;
+			font-size: 20px;
+		}
+		
+		#fixHand
+		{
+			float: right;
+			padding-right: 2%;
+			
+		}
+		
+		#fixHand h1
+		{
+			font-size: 30px;
+			color: orange;
+			text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+		}
+		
+		#gamble
+		{
+			border: solid thick black;
+			float: right;
+			padding-right: 5%;
+		}
+		
+		</style>
+		<script>
+		function initialize()
+		{	
+			jBoard = document.getElementById("board");
+			jGameStatus = document.getElementById("game_status");
+			jBetAmount = document.getElementById("bet_amount");
+			jSetAmount = document.getElementById("set_amount");
+
+			
+			BOARD_SIZE = 5;
+			cardsOnBoard = [];
+			pointValues = [13, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+			selected = [];
+			betMoney = 0;
+			finalMoney = 0;
+			accountMoney = 2000;
+			display();
+			
+			ACE = 1, JACK = 11, QUEEN = 12, KING = 13;
+			CLUB = 0, DIAMOND = 1, HEART = 2, SPADE = 3;
+						
+			myDeck = generateDeckWithPointValues(pointValues);
+			myDeck = shuffleDeck(myDeck);
+			
+			replaceCards.disabled = true;
+			replaceHand.disabled = true; 
+						
+			for (var i = 0; i < BOARD_SIZE; i++)
+			{
+				var theTD = jBoard.insertCell(i);
+				cardsOnBoard.push(dealCard(myDeck)); 
+				theTD.innerHTML = "<img src = 'card images/" + cardsOnBoard[i].cardImg + "'/>";
+				theTD.setAttribute("onclick", "selectUnselect(this);");
+				selected.push(false);
+			}			
+		}
+
+		function getRandomInteger(lower, upper)
+		{
+			multiplier = upper - (lower - 1);
+			rnd = parseInt(Math.random() * multiplier) + lower;
+			
+			return rnd;
+		}
+		
+		function generateStandardDeck()
+		{
+			var deck = [];
+			
+			for (var r = ACE; r <= KING; r++)
+				for (var s = CLUB; s <= SPADE; s++)
+				{
+					var card = new Object();
+					card.rank = r;
+					card.suit = s;
+					card.cardImg = r + "-" + s + ".png";
+					deck.push(card);
+				}
+				
+			return deck;
+		}
+
+		function generateDeckWithPointValues(pointValues)
+		{
+			var deck = [];
+			if (pointValues.length != 13)
+				return deck;
+				
+			for (var r = ACE; r <= KING; r++)
+				for (var s = CLUB; s <= SPADE; s++)
+				{
+					var card = new Object();
+					card.rank = r;
+					card.suit = s;
+					card.pointValue = pointValues[r-1];
+					card.cardImg = r + "-" + s + ".png";
+					deck.push(card);
+				}
+				
+			return deck;
+		}
+
+		function shuffleDeck(deck)
+		{
+			var randomDeck = [];
+			while(deck.length > 0)
+			{
+				var idx = getRandomInteger(0, deck.length - 1);
+				var card = deck.splice(idx, 1);
+				randomDeck.push(card[0]);	
+			}
+			return randomDeck;
+		}
+
+		function dealCard(deck)
+		{
+			return deck.shift();
+		}
+
+		function Card(theRank, theSuit, theImg, thePointValue)
+		{
+			this.rank = theRank;
+			this.suit = theSuit;
+		}
+	
+		function selectUnselect(tD)
+		{
+			for (var i = 0; i < jBoard.cells.length; i++)
+			{
+				if (jBoard.cells[i] == tD)
+				{
+					selected[i] = !selected[i];
+
+					if (selected[i])
+						tD.style.border = "solid red";
+					else
+						tD.style.border = "none";
+					return;
+				}
+			}
+		}
+		
+		function replaceCard(index)
+		{
+			var theTD = jBoard.cells[index];
+			if (myDeck.length > 0)
+			{
+				cardsOnBoard[index] = dealCard(myDeck);
+				theTD.innerHTML = "<img src = 'card images/" + cardsOnBoard[index].cardImg + "'/>";
+			}
+			else
+			{
+				cardsOnBoard[index] = null;
+				theTD.innerHTML = "<img src = 'card images/back-red-75-1.png'/>";
+			}
+			selectUnselect(theTD);
+		}
+		
+		function getIndexesOfCardsOnBoard()
+		{
+			var selectedIndexes = [];
+			for (var i = 0; i < BOARD_SIZE; i++)
+			{
+				if (cardsOnBoard[i] != null)
+				{
+					selectedIndexes.push(i);
+				}
+			}	
+			return selectedIndexes;
+		}
+		
+		function getSelectedIndexes()
+		{
+			var selectedIndexes = [];
+			for (var i = 0; i < BOARD_SIZE; i++)
+			{
+				if (selected[i] && cardsOnBoard != null)
+				{
+					selectedIndexes.push(i);
+				}
+			}	
+			return selectedIndexes;
+		}
+		
+		function containsTwoPairs()
+		{
+			for(var i = 0; i < cardsOnBoard.length - 1; i++)
+			{
+				var card1 = cardsOnBoard[i];
+				var rank1 = card1.rank;
+				
+				for(var j = i + 1; j < cardsOnBoard.length; j++)
+				{	
+					var card2 = cardsOnBoard[j];
+					var rank2 = card2.rank; 
+					
+					if (rank2 == rank1)
+					{
+						for(var k =  i + 1; k < cardsOnBoard.length - 1; k++)
+						{
+							var card3 = cardsOnBoard[k];
+							var rank3 = card3.rank;
+								
+							for(var a = k + 1; a < cardsOnBoard.length; a++)
+							{	
+								var card4 = cardsOnBoard[a];
+								var rank4 = card4.rank; 
+								
+								if (rank1 != rank3 && rank3 == rank4)
+								{
+									return true;
+			}	}	}	}	}	}						
+					
+			return false;
+		}
+		
+		function containsTriple()
+		{
+			for(var i = 0; i < cardsOnBoard.length - 2; i++)
+			{ 
+				var card1 = cardsOnBoard[i];
+				var rank1 = card1.rank;
+
+				for(var j = i + 1; j < cardsOnBoard.length - 1; j++)
+				{
+					var card2 = cardsOnBoard[j];
+					var rank2 = card2.rank;
+
+					for(var k = j + 1; k < cardsOnBoard.length; k++)
+					{	
+						var card3 = cardsOnBoard[k];
+						var rank3 = card3.rank;
+
+						if (rank1 == rank2 && rank2 == rank3) 
+						{
+							return true;
+						}
+					}	
+				}
+			}
+			return false;
+		}
+
+		function containsFourOfKind()
+		{
+			for(var i = 0; i < cardsOnBoard.length - 3; i++)
+			{ 
+				var card1 = cardsOnBoard[i];
+				var rank1 = card1.rank;
+
+				for(var j = i + 1; j < cardsOnBoard.length - 2; j++)
+				{
+					var card2 = cardsOnBoard[j];
+					var rank2 = card2.rank;
+
+					for(var k = j + 1; k < cardsOnBoard.length - 1; k++)
+					{	
+						var card3 = cardsOnBoard[k];
+						var rank3 = card3.rank;
+						
+						for(var n = k + 1; n < cardsOnBoard.length; n++)
+						{	
+							var card4 = cardsOnBoard[n];
+							var rank4 = card4.rank;	
+							
+							if (rank1 == rank2 && rank2 == rank3 && 
+								rank3 == rank4) 
+							{
+								return true;
+							}
+						}
+					}	
+				}
+			}
+			return false;
+		}
+		
+		function containsStraight()
+		{	
+			for(var i = 0; i < cardsOnBoard.length; i++)
+			{ 
+				var card1 = cardsOnBoard[i];
+				var rank1 = card1.pointValue;
+				
+				for(var j = 0; j < cardsOnBoard.length; j++)
+				{
+					var card2 = cardsOnBoard[j];
+					var rank2 = card2.pointValue;
+				
+					for(var k = 0; k < cardsOnBoard.length; k++)
+					{
+						var card3 = cardsOnBoard[k];
+						var rank3 = card3.pointValue;
+						
+						for(var n = 0; n < cardsOnBoard.length; n++)
+						{
+							var card4 = cardsOnBoard[n];
+							var rank4 = card4.pointValue;
+							
+							for(var m = 0; m < cardsOnBoard.length; m++)
+							{
+								var card5 = cardsOnBoard[m];
+								var rank5 = card5.pointValue;
+								
+								if (rank1 < rank2 && rank1 < rank3 && 
+									rank1 < rank4 && rank1 < rank5)
+								{
+									if (rank2 == rank1 + 1 && rank3 == rank1 + 2 && 
+										rank4 == rank1 + 3 && rank5 == rank1 + 4)
+									{
+										return true;
+												
+			}	}	}	}	}	} 	}
+			
+			return false;
+		} 
+
+		function containsFlush()
+		{
+			for(var i = 0; i < cardsOnBoard.length - 4; i++)
+			{
+				var card1 = cardsOnBoard[i];
+				var suit1 = card1.suit;
+
+				for(var j = i + 1; j < cardsOnBoard.length - 3; j++)
+				{
+					var card2 = cardsOnBoard[j];
+					var suit2 = card2.suit;
+
+					for(var k = j + 1; k < cardsOnBoard.length - 2; k++)
+					{	
+						var card3 = cardsOnBoard[k];
+						var suit3 = card3.suit;
+
+						for(var n = k + 1; n < cardsOnBoard.length - 1; n++)
+						{
+							var card4 = cardsOnBoard[n];
+							var suit4 = card4.suit;
+
+							for(var b = n + 1; b < cardsOnBoard.length; b++)
+							{	
+								var card5 = cardsOnBoard[b];
+								var suit5 = card5.suit;
+
+								if (suit1 == suit2 && suit2 == suit3 && 
+									suit3 == suit4 && suit4 == suit5) 
+								{
+									return true;
+			}	}	}	}	}	}
+	
+			return false;
+
+		}
+
+		function containsFullHouse()
+		{
+			for(var i = 0; i < cardsOnBoard.length - 2; i++)
+			{
+				var card1 = cardsOnBoard[i];
+				var rank1 = card1.rank;
+
+				for(var j = i + 1; j < cardsOnBoard.length - 1; j++)
+				{
+					var card2 = cardsOnBoard[j];
+					var rank2 = card2.rank;
+
+					for(var k = j + 1; k < cardsOnBoard.length; k++)
+					{	
+						var card3 = cardsOnBoard[k];
+						var rank3 = card3.rank;
+								
+						if (rank1 == rank2 && rank2 == rank3) 
+						{
+							for (var n = 0; n < cardsOnBoard.length - 1; n++)
+							{
+								var card4 = cardsOnBoard[n];
+								var rank4 = card4.rank;
+								
+								if (rank4 != rank1)
+								{
+									for (var m = n + 1; m < cardsOnBoard.length; m++)
+									{
+										var card5 = cardsOnBoard[m];
+										var rank5 = card5.rank;
+										
+										if (rank4 == rank5)
+										{
+											return true;
+			}	}	}	}	}	}	}	}							
+
+			return false;
+		} 
+
+		function containStraightFlush()
+		{
+			if (containsStraight() && containsFlush())
+			{
+				return true;
+			}
+			return false;
+		} 
+
+		function containRoyalStraightFlush()
+		{
+			for(var i = 0; i < cardsOnBoard.length; i++)
+			{ 
+				var card1 = cardsOnBoard[i];
+				var rank1 = card1.pointValue;
+				
+				for(var j = 0; j < cardsOnBoard.length; j++)
+				{
+					var card2 = cardsOnBoard[j];
+					var rank2 = card2.pointValue;
+				
+					for(var k = 0; k < cardsOnBoard.length; k++)
+					{
+						var card3 = cardsOnBoard[k];
+						var rank3 = card3.pointValue;
+						
+						for(var n = 0; n < cardsOnBoard.length; n++)
+						{
+							var card4 = cardsOnBoard[n];
+							var rank4 = card4.pointValue;
+							
+							for(var m = 0; m < cardsOnBoard.length; m++)
+							{
+								var card5 = cardsOnBoard[m];
+								var rank5 = card5.pointValue;
+								
+								if (rank1 == 9 && rank2 == 10 && rank3 == 11 && 
+									rank4 == 12 && rank5 == 13)
+								{
+									if (containsFlush())
+									{
+										return true;	
+			}	}	}	}	}	}	}
+	
+			return false;
+		} 
+		
+		function updateMoney()
+		{	
+			if (containRoyalStraightFlush())
+			{
+				betMoney = betMoney * 250;
+				accountMoney = accountMoney + betMoney;
+				jGameStatus.innerHTML = "Royal Straight Flush! You got $" + betMoney;
+				display();		
+				return true;
+			}
+				 
+			else if (containStraightFlush())
+			{
+				betMoney = betMoney * 25;
+				accountMoney = accountMoney + betMoney;
+				jGameStatus.innerHTML = "Straight Flush! You got $" + betMoney;
+				display();
+				return true;
+			} 
+					
+			else if (containsFourOfKind())
+			{
+				betMoney = betMoney * 20;
+				accountMoney = accountMoney + betMoney;
+				jGameStatus.innerHTML = "Four Of a Kind! You got $" + betMoney;
+				display();
+				return true;
+			} 
+				
+			else if (containsFullHouse())
+			{
+				betMoney = betMoney * 10;
+				accountMoney = accountMoney + betMoney;
+				jGameStatus.innerHTML = "Full House! You got $" + betMoney;
+				display();
+				return true;
+			}  
+				
+			else if (containsFlush())
+			{
+				betMoney = betMoney * 5;
+				accountMoney = accountMoney + betMoney;
+				jGameStatus.innerHTML = "Flush! You got $" + betMoney;
+				display();
+				return true;
+			}  
+
+			else if (containsStraight())
+			{
+				betMoney = betMoney * 3;
+				accountMoney = accountMoney + betMoney;
+				jGameStatus.innerHTML = "Straight! You got $" + betMoney + ".";
+				display();
+				return true;
+			} 
+
+			else if (containsTriple())
+			{
+				betMoney = betMoney * 2;
+				accountMoney = accountMoney + betMoney;
+				jGameStatus.innerHTML = "Triple! You got $" + betMoney;
+				display();
+				return true;
+			} 
+
+			else if (containsTwoPairs())
+			{
+				betMoney = betMoney * 1;
+				accountMoney = accountMoney + betMoney;
+				jGameStatus.innerHTML = "Two Pairs! You got $" + betMoney;
+				display();
+				return true;
+			} 
+			else
+			{
+				accountMoney = accountMoney - betMoney;
+				jGameStatus.innerHTML = "No combos! You've lost $" + betMoney;
+				display();
+			}
+		}
+		
+		function replace()
+		{
+			var selectedIndexes = getSelectedIndexes();
+			replaceCards.disabled = true;
+			replaceHand.disabled = false;
+			betOne.disabled = true;
+			betTen.disabled = true;
+			betHundred.disabled = true;
+			betThousand.disabled = true; 
+			
+			for (var i = 0; i < selectedIndexes.length; i++)
+			{
+				replaceCard(selectedIndexes[i]);
+			}
+
+			updateMoney();
+		} 
+		
+		function newHand()
+		{					
+			myDeck = generateDeckWithPointValues(pointValues);
+			myDeck = shuffleDeck(myDeck);
+			betMoney = 0;
+			finalMoney = 0;
+			display();
+			
+			replaceHand.disabled = true;
+			betOne.disabled = false;			
+			betTen.disabled = false;
+			betHundred.disabled = false;
+			betThousand.disabled = false; 
+			
+			for(var i = 0; i < BOARD_SIZE; i++)
+			{
+				var theTD = jBoard.cells[i];
+				selected[i] = true;
+				replaceCard(i);
+			}
+			
+			jGameStatus.innerHTML = "";
+		}
+		
+		function restart()
+		{				
+			myDeck = generateDeckWithPointValues(pointValues);
+			myDeck = shuffleDeck(myDeck);
+			betMoney = 0;
+			finalMoney = 0;
+			accountMoney = 2000;
+			display();
+			
+			replaceCards.disabled = true;
+			replaceHand.disabled = true;
+			betOne.disabled = false;
+			betTen.disabled = false;
+			betHundred.disabled = false;
+			betThousand.disabled = false; 
+			
+			for(var i = 0; i < BOARD_SIZE; i++)
+			{
+				var theTD = jBoard.cells[i];
+				selected[i] = true;
+				replaceCard(i);
+			}
+			
+			jGameStatus.innerHTML = "";
+		}
+		
+		
+		function bet(number)
+		{
+			betMoney += number;
+			finalMoney += number;
+			
+			if (accountMoney >= betMoney)
+			{
+				display();
+				replaceCards.disabled = false;
+			}
+			else
+			{
+				betMoney -= number;
+				finalMoney -= number;
+			}
+			display();
+		}
+		
+		function resetMoney()
+		{
+			betMoney = 0;
+			finalMoney = 0;
+			replaceCards.disabled = true; 
+			display();
+		}
+		
+		function display()
+		{
+			jSetAmount.innerHTML = "Have: $" + accountMoney;
+			jBetAmount.innerHTML = "Betting: $" + finalMoney;
+		}
+		
+		</script>
+	</head>
+	<body onload = "initialize();">
+		<div id = "theTitle"> Poker Casino! <br/> Place a bet and click on the cards you want to replace.</div>
+		
+		<h1 id = "bigContainer">
+			<div id = "theTable">
+				<span>	
+					<table id = "comboTable">
+						<tr>
+							<th colspan = "4"> Poker Comboes </th>
+						</tr> 
+						<tr>
+							<td> Royal Straight Flush </td> 
+							<td> x250 </td>
+							<td> Flush </td>
+							<td> x5 </td>
+						</tr>
+						<tr>
+							<td> Straight Flush </td>
+							<td> x25 </td>
+							<td> Straight </td>
+							<td> x3 </td>
+						</tr>
+						<tr>
+							<td> Four Of a Kind </td> 
+							<td> x20 </td>
+							<td> Three Of a Kind </td>
+							<td> x2 </td>
+						</tr>
+						<tr>
+							<td> Full House </td>
+							<td> x10 </td>
+							<td> Two Pairs </td>
+							<td> x1 </td>
+						</tr>	
+					</table>
+				</span>	
+			</div>
+			
+			<div id = "pokerboard">
+				<span>
+					<table>
+						<tr id = "board">
+						
+						</tr>
+					</table>
+				</span><br/>
+
+				<div id = "game_status"></div> 
+			</div>
+			
+			<div id = "fixHand">
+				<span>
+					<button id = "replaceCards" onclick = "replace();"> Replace </button>
+					<button id = "replaceHand" onclick = "newHand();"> Deal New Hand </button><br/>
+					<button id = "restartGame" onclick = "restart();"> Restart Game</button>
+				</span>	<br/>
+				<span>
+					<h1 id = "set_amount"></h1>
+					<h1 id = "bet_amount"></h1>
+					<h1> Bet How Much? </h1>
+				</span>
+				<span>	
+					<button id = "betZero" onclick = "resetMoney()"> Reset Amount </button><br/>
+					<button id = "betTen" onclick = "bet(10);"> $10 </button>
+					<button id = "betHundred" onclick = "bet(100);"> $100 </button>
+					<button id = "betThousand" onclick = "bet(1000);"> $1000 </button>
+					<button id = "betOne" onclick = "bet(10000);"> $10000 </button>
+					
+				</span>
+			</div><br/><br/>
+		</h1>
+	</body>
+</html>
