@@ -1,5 +1,5 @@
 # Poker-Casino
-By Raymond
+By Raymond Kwok
 
 A Poker High or Low Game based on the one from real life casinos
 No malicious attempt of gambling.
