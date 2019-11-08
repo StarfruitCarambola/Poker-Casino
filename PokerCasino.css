@@ -4,6 +4,7 @@ body
 	background-size: auto;
 	background-repeat: no-repeat;
 	cursor: default;
+	margin: 0;
 }
 		
 #theTitle
@@ -42,7 +43,7 @@ body
 #pokerboard
 {
 	display: inline-block;
-	float: left;
+	float: middle;
 }
 				
 button
@@ -50,6 +51,8 @@ button
 	font: bold;
 	font-size: 25px;
 	cursor: pointer;
+	background: white;
+	color: black;
 }
 		
 #comboTable
@@ -83,6 +86,7 @@ button
 	font-size: 30px;
 	color: orange;
 	text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+	
 }
 		
 #gamble
@@ -91,4 +95,9 @@ button
 	float: right;
 	padding-right: 5%;
 }
-		
+
+button:hover
+{
+	color: white;
+	background: black; 
+}

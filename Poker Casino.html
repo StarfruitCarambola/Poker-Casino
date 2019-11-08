@@ -13,25 +13,42 @@
 			jBetAmount = document.getElementById("bet_amount");
 			jSetAmount = document.getElementById("set_amount");
 
-			
+			//board will contain up to 5 cards 
 			BOARD_SIZE = 5;
+			
+			//will start with no cards on board
 			cardsOnBoard = [];
+			
+			//assign point values to each respective card
+			//ace has a point value of 13, 2 has a point value of 1, 3 has a point value of 2, etc.
 			pointValues = [13, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+			
+			//cards selected on the board
 			selected = [];
+			
+			//how much you want to bet
 			betMoney = 0;
+			//amount used to help calculate how much you have left
 			finalMoney = 0;
+			//how much you currently have 
 			accountMoney = 2000;
 			display();
 			
+			//assigns point values to special cards
 			ACE = 1, JACK = 11, QUEEN = 12, KING = 13;
+			//assigns point values to the suites
 			CLUB = 0, DIAMOND = 1, HEART = 2, SPADE = 3;
-						
+			
+			//creates the deck 			
 			myDeck = generateDeckWithPointValues(pointValues);
+			//shuffles the deck
 			myDeck = shuffleDeck(myDeck);
 			
+			//helps indicate if you can click on the buttons or not to perform the action
 			replaceCards.disabled = true;
 			replaceHand.disabled = true; 
-						
+			
+			//deals cards from top of the deck to board
 			for (var i = 0; i < BOARD_SIZE; i++)
 			{
 				var theTD = jBoard.insertCell(i);
@@ -41,7 +58,8 @@
 				selected.push(false);
 			}			
 		}
-
+		
+		//helper function to help pick a random card
 		function getRandomInteger(lower, upper)
 		{
 			multiplier = upper - (lower - 1);
@@ -50,11 +68,17 @@
 			return rnd;
 		}
 		
+		/*
+		//debug function to make sure the entire deck is generated correctly
 		function generateStandardDeck()
 		{
+			//begins as an empty array to fill up
 			var deck = [];
 			
+			//loops through all the numbers
 			for (var r = ACE; r <= KING; r++)
+			{
+				//loops through all the suites
 				for (var s = CLUB; s <= SPADE; s++)
 				{
 					var card = new Object();
@@ -63,17 +87,24 @@
 					card.cardImg = r + "-" + s + ".png";
 					deck.push(card);
 				}
-				
+			}	
 			return deck;
 		}
-
+		*/
+		
+		//creates the deck assigning each card a point value
 		function generateDeckWithPointValues(pointValues)
 		{
+			//deck starts at as an empty array to be filled up
 			var deck = [];
+			//ensures there are 13 point values 
 			if (pointValues.length != 13)
 				return deck;
-				
+			
+			//loops through all the numbers			
 			for (var r = ACE; r <= KING; r++)
+			{
+				//loops through all the suites
 				for (var s = CLUB; s <= SPADE; s++)
 				{
 					var card = new Object();
@@ -83,66 +114,89 @@
 					card.cardImg = r + "-" + s + ".png";
 					deck.push(card);
 				}
-				
+			}	
 			return deck;
 		}
-
+		
+		//shuffles the deck 
 		function shuffleDeck(deck)
 		{
+			//creates a new array as the shuffled deck to place random cards in 
 			var randomDeck = [];
+			
+			//as long as the deck still has cards
 			while(deck.length > 0)
 			{
-				var idx = getRandomInteger(0, deck.length - 1);
-				var card = deck.splice(idx, 1);
+				//takes a random card from the deck
+				//starts at 0-51 first, then 0-50, then 0-49, etc 
+				var temp = getRandomInteger(0, deck.length - 1);
+				//removes the card from the deck at temp position
+				var card = deck.splice(temp, 1);
+				//take that card and toss it in the randomDeck array
 				randomDeck.push(card[0]);	
 			}
 			return randomDeck;
 		}
-
+		
+		//deals the top card of the deck
 		function dealCard(deck)
 		{
+			//removes the first position card aka the top card
 			return deck.shift();
 		}
-
+		
+		//constructor for the Card object
 		function Card(theRank, theSuit, theImg, thePointValue)
 		{
 			this.rank = theRank;
 			this.suit = theSuit;
 		}
-	
-		function selectUnselect(tD)
+	    
+		//allows the user to selected card
+		//cardValue is the point value of the selected card
+		function selectUnselect(cardValue)
 		{
+			//loop through the board of cards 
 			for (var i = 0; i < jBoard.cells.length; i++)
 			{
-				if (jBoard.cells[i] == tD)
+				if (jBoard.cells[i] == cardValue)
 				{
 					selected[i] = !selected[i];
-
+					
+					//makes the border of the selected card red 
 					if (selected[i])
-						tD.style.border = "solid red";
+						cardValue.style.border = "solid red";
+					//otherwise de-select the card and remove the red border 
 					else
-						tD.style.border = "none";
+						cardValue.style.border = "none";
 					return;
 				}
 			}
 		}
 		
+		//replace the card at the index
 		function replaceCard(index)
 		{
 			var theTD = jBoard.cells[index];
+			
+			//while there are still cards, it will deal the top card
 			if (myDeck.length > 0)
 			{
 				cardsOnBoard[index] = dealCard(myDeck);
 				theTD.innerHTML = "<img src = 'card images/" + cardsOnBoard[index].cardImg + "'/>";
 			}
+			//if not, display a backwards card 
 			else
 			{
 				cardsOnBoard[index] = null;
 				theTD.innerHTML = "<img src = 'card images/back-red-75-1.png'/>";
 			}
+			//takes the card selected and highlight it with a red border
 			selectUnselect(theTD);
 		}
 		
+		/*
+		//debug function to make sure all the indexes of each card is correct
 		function getIndexesOfCardsOnBoard()
 		{
 			var selectedIndexes = [];
@@ -155,10 +209,15 @@
 			}	
 			return selectedIndexes;
 		}
+		*/
 		
+		//gets all the cards that were selected
 		function getSelectedIndexes()
 		{
 			var selectedIndexes = [];
+			
+			//loops through all the cards on board
+			//take all the selected cards and push it in the array to return in the end
 			for (var i = 0; i < BOARD_SIZE; i++)
 			{
 				if (selected[i] && cardsOnBoard != null)
@@ -169,6 +228,7 @@
 			return selectedIndexes;
 		}
 		
+		//returns if there are two pairs of cards with the same value 
 		function containsTwoPairs()
 		{
 			for(var i = 0; i < cardsOnBoard.length - 1; i++)
@@ -193,14 +253,20 @@
 								var card4 = cardsOnBoard[a];
 								var rank4 = card4.rank; 
 								
+								//ensures that you do not get a triple or quad
 								if (rank1 != rank3 && rank3 == rank4)
 								{
 									return true;
-			}	}	}	}	}	}						
-					
+								}	
+							}	
+						}	
+					}	
+				}	
+			}							
 			return false;
 		}
 		
+		//returns if there are three cards with the same point value
 		function containsTriple()
 		{
 			for(var i = 0; i < cardsOnBoard.length - 2; i++)
@@ -228,6 +294,7 @@
 			return false;
 		}
 
+		//returns if there are four cards with the same point value
 		function containsFourOfKind()
 		{
 			for(var i = 0; i < cardsOnBoard.length - 3; i++)
@@ -250,8 +317,7 @@
 							var card4 = cardsOnBoard[n];
 							var rank4 = card4.rank;	
 							
-							if (rank1 == rank2 && rank2 == rank3 && 
-								rank3 == rank4) 
+							if (rank1 == rank2 && rank2 == rank3 && rank3 == rank4) 
 							{
 								return true;
 							}
@@ -262,6 +328,8 @@
 			return false;
 		}
 		
+		
+		//returns if all 5 cards is a straight
 		function containsStraight()
 		{	
 			for(var i = 0; i < cardsOnBoard.length; i++)
@@ -289,52 +357,78 @@
 								var card5 = cardsOnBoard[m];
 								var rank5 = card5.pointValue;
 								
-								if (rank1 < rank2 && rank1 < rank3 && 
-									rank1 < rank4 && rank1 < rank5)
+								if (rank1 < rank2 && rank1 < rank3 && rank1 < rank4 && rank1 < rank5)
 								{
-									if (rank2 == rank1 + 1 && rank3 == rank1 + 2 && 
-										rank4 == rank1 + 3 && rank5 == rank1 + 4)
+									if (rank2 == rank1 + 1 && rank3 == rank1 + 2 && rank4 == rank1 + 3 && rank5 == rank1 + 4)
 									{
 										return true;
 												
-			}	}	}	}	}	} 	}
-			
+									}	
+								}
+							}	
+						}	
+					}	
+				} 	
+			}
 			return false;
 		} 
-
-		function containsFlush()
-		{
-			for(var i = 0; i < cardsOnBoard.length - 4; i++)
-			{
-				var card1 = cardsOnBoard[i];
-				var suit1 = card1.suit;
-
-				for(var j = i + 1; j < cardsOnBoard.length - 3; j++)
-				{
-					var card2 = cardsOnBoard[j];
-					var suit2 = card2.suit;
-
-					for(var k = j + 1; k < cardsOnBoard.length - 2; k++)
-					{	
-						var card3 = cardsOnBoard[k];
-						var suit3 = card3.suit;
-
-						for(var n = k + 1; n < cardsOnBoard.length - 1; n++)
-						{
-							var card4 = cardsOnBoard[n];
-							var suit4 = card4.suit;
-
-							for(var b = n + 1; b < cardsOnBoard.length; b++)
-							{	
-								var card5 = cardsOnBoard[b];
-								var suit5 = card5.suit;
-
-								if (suit1 == suit2 && suit2 == suit3 && 
-									suit3 == suit4 && suit4 == suit5) 
-								{
-									return true;
-			}	}	}	}	}	}
+		
+		
+		/*
+		//returns if all 5 cards is a straight
+		//insertion sort alternative
+		function containsStraight()
+		{	
+			var txd = cardsOnBoard;
 	
+			for(var i = 1; i < txd.length; i++)
+			{ 
+				var card1 = txd[i];
+				var rank1 = card1.pointValue;
+				
+				var j = i - 1;
+				var temp = rank1;
+				
+				while (j >= 0 && txd[j].pointValue > temp)
+				{
+					txd[j + 1] = txd[j];
+					j--;
+				}
+				txd[j+1] = temp;
+			}
+			for(i = 1; i < txd.length; i++)
+			{
+				if(txd[i-1].pointValue + 1 != txd[i].pointValue)
+				{
+					return false;
+				}
+			}
+			return true;
+		} 
+		*/
+		
+		function containsFlush()
+		{			
+			var card1 = cardsOnBoard[0];
+			var suit1 = card1.suit;
+			
+			var card2 = cardsOnBoard[1];
+			var suit2 = card2.suit;
+			
+			var card3 = cardsOnBoard[2];
+			var suit3 = card3.suit;
+			
+			var card4 = cardsOnBoard[3];
+			var suit4 = card4.suit;
+			
+			var card5 = cardsOnBoard[4];
+			var suit5 = card5.suit;
+			
+			if (suit1 == suit2 && suit2 == suit3 && suit3 == suit4 && suit4 == suit5) 
+			{
+				return true;
+			}	
+		
 			return false;
 
 		}
@@ -373,8 +467,14 @@
 										if (rank4 == rank5)
 										{
 											return true;
-			}	}	}	}	}	}	}	}							
-
+										}	
+									}	
+								}	
+							}	
+						}	
+					}	
+				}	
+			}							
 			return false;
 		} 
 
@@ -414,14 +514,18 @@
 								var card5 = cardsOnBoard[m];
 								var rank5 = card5.pointValue;
 								
-								if (rank1 == 9 && rank2 == 10 && rank3 == 11 && 
-									rank4 == 12 && rank5 == 13)
+								if (rank1 == 9 && rank2 == 10 && rank3 == 11 && rank4 == 12 && rank5 == 13)
 								{
 									if (containsFlush())
 									{
 										return true;	
-			}	}	}	}	}	}	}
-	
+									}	
+								}	
+							}	
+						}	
+					}	
+				}	
+			}
 			return false;
 		} 
 		
@@ -431,7 +535,7 @@
 			{
 				betMoney = betMoney * 250;
 				accountMoney = accountMoney + betMoney;
-				jGameStatus.innerHTML = "Royal Straight Flush! You got $" + betMoney;
+				jGameStatus.innerHTML = "Royal Straight Flush! <br> You got $" + betMoney;
 				display();		
 				return true;
 			}
@@ -440,7 +544,7 @@
 			{
 				betMoney = betMoney * 25;
 				accountMoney = accountMoney + betMoney;
-				jGameStatus.innerHTML = "Straight Flush! You got $" + betMoney;
+				jGameStatus.innerHTML = "Straight Flush! <br> You got $" + betMoney;
 				display();
 				return true;
 			} 
@@ -449,7 +553,7 @@
 			{
 				betMoney = betMoney * 20;
 				accountMoney = accountMoney + betMoney;
-				jGameStatus.innerHTML = "Four Of a Kind! You got $" + betMoney;
+				jGameStatus.innerHTML = "Four Of a Kind! <br> You got $" + betMoney;
 				display();
 				return true;
 			} 
@@ -458,7 +562,7 @@
 			{
 				betMoney = betMoney * 10;
 				accountMoney = accountMoney + betMoney;
-				jGameStatus.innerHTML = "Full House! You got $" + betMoney;
+				jGameStatus.innerHTML = "Full House! <br> You got $" + betMoney;
 				display();
 				return true;
 			}  
@@ -467,7 +571,7 @@
 			{
 				betMoney = betMoney * 5;
 				accountMoney = accountMoney + betMoney;
-				jGameStatus.innerHTML = "Flush! You got $" + betMoney;
+				jGameStatus.innerHTML = "Flush! <br> You got $" + betMoney;
 				display();
 				return true;
 			}  
@@ -476,7 +580,7 @@
 			{
 				betMoney = betMoney * 3;
 				accountMoney = accountMoney + betMoney;
-				jGameStatus.innerHTML = "Straight! You got $" + betMoney + ".";
+				jGameStatus.innerHTML = "Straight! <br> You got $" + betMoney + ".";
 				display();
 				return true;
 			} 
@@ -485,7 +589,7 @@
 			{
 				betMoney = betMoney * 2;
 				accountMoney = accountMoney + betMoney;
-				jGameStatus.innerHTML = "Triple! You got $" + betMoney;
+				jGameStatus.innerHTML = "Triple! <br> You got $" + betMoney;
 				display();
 				return true;
 			} 
@@ -494,14 +598,14 @@
 			{
 				betMoney = betMoney * 1;
 				accountMoney = accountMoney + betMoney;
-				jGameStatus.innerHTML = "Two Pairs! You got $" + betMoney;
+				jGameStatus.innerHTML = "Two Pairs! <br> You got $" + betMoney;
 				display();
 				return true;
 			} 
 			else
 			{
 				accountMoney = accountMoney - betMoney;
-				jGameStatus.innerHTML = "No combos! You've lost $" + betMoney;
+				jGameStatus.innerHTML = "No combos! <br> You've lost $" + betMoney;
 				display();
 			}
 		}
