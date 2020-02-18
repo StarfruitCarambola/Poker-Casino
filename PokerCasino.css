@@ -4,13 +4,12 @@ body
 	background-size: auto;
 	background-repeat: no-repeat;
 	cursor: default;
-	margin: 0;
 }
 		
 #theTitle
 {
 	font: bold 40pt Calibri;
-	color: orange;
+	color: red;
 	text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 	text-align: center;
 	padding: 1%;
@@ -19,7 +18,7 @@ body
 #game_status
 {
 	font: bold 36pt Calibri;
-	color: orange;
+	color: red;
 	text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 	text-align: center;
 }
@@ -57,22 +56,16 @@ button
 		
 #comboTable
 {
-	border: solid thick black;
-	padding: 1%;
-	background-color: white;			
+	border-collapse: collapse;
+	background-color: white;	
+	width: 100%;
 }
 		
-#comboTable th
+#comboTable, th, td
 {
+	border: solid black;
 	text-align: center;
-	font-size: 25px;
-}
-		
-#comboTable td
-{
-	border: solid thick black;
 	padding: 10px;
-	font-size: 20px;
 }
 		
 #fixHand
@@ -84,20 +77,14 @@ button
 #fixHand h1
 {	
 	font-size: 30px;
-	color: orange;
+	color: red;
 	text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 	
-}
-		
-#gamble
-{
-	border: solid thick black;
-	float: right;
-	padding-right: 5%;
 }
 
 button:hover
 {
 	color: white;
-	background: black; 
+	background: gray;
+	
 }
