@@ -5,6 +5,8 @@
 		<title></title>
 		<link rel = "stylesheet" type = "text/css" href = "PokerCasino.css" />
 		<style></style>
+		<script src = "utilities.js"></script>
+		<script src = "cardengine.js"></script>
 		<script>
 		function initialize()
 		{	
@@ -59,99 +61,6 @@
 			}			
 		}
 		
-		//helper function to help pick a random card
-		function getRandomInteger(lower, upper)
-		{
-			multiplier = upper - (lower - 1);
-			rnd = parseInt(Math.random() * multiplier) + lower;
-			
-			return rnd;
-		}
-		
-		/*
-		//debug function to make sure the entire deck is generated correctly
-		function generateStandardDeck()
-		{
-			//begins as an empty array to fill up
-			var deck = [];
-			
-			//loops through all the numbers
-			for (var r = ACE; r <= KING; r++)
-			{
-				//loops through all the suites
-				for (var s = CLUB; s <= SPADE; s++)
-				{
-					var card = new Object();
-					card.rank = r;
-					card.suit = s;
-					card.cardImg = r + "-" + s + ".png";
-					deck.push(card);
-				}
-			}	
-			return deck;
-		}
-		*/
-		
-		//creates the deck assigning each card a point value
-		function generateDeckWithPointValues(pointValues)
-		{
-			//deck starts at as an empty array to be filled up
-			var deck = [];
-			//ensures there are 13 point values 
-			if (pointValues.length != 13)
-				return deck;
-			
-			//loops through all the numbers			
-			for (var r = ACE; r <= KING; r++)
-			{
-				//loops through all the suites
-				for (var s = CLUB; s <= SPADE; s++)
-				{
-					var card = new Object();
-					card.rank = r;
-					card.suit = s;
-					card.pointValue = pointValues[r-1];
-					card.cardImg = r + "-" + s + ".png";
-					deck.push(card);
-				}
-			}	
-			return deck;
-		}
-		
-		//shuffles the deck 
-		function shuffleDeck(deck)
-		{
-			//creates a new array as the shuffled deck to place random cards in 
-			var randomDeck = [];
-			
-			//as long as the deck still has cards
-			while(deck.length > 0)
-			{
-				//takes a random card from the deck
-				//starts at 0-51 first, then 0-50, then 0-49, etc 
-				var temp = getRandomInteger(0, deck.length - 1);
-				//removes the card from the deck at temp position
-				var card = deck.splice(temp, 1);
-				//take that card and toss it in the randomDeck array
-				randomDeck.push(card[0]);	
-			}
-			return randomDeck;
-		}
-		
-		//deals the top card of the deck
-		function dealCard(deck)
-		{
-			//removes the first position card aka the top card
-			return deck.shift();
-		}
-		
-		//constructor for the Card object
-		function Card(theRank, theSuit, theImg, thePointValue)
-		{
-			this.rank = theRank;
-			this.suit = theSuit;
-		}
-	    
 		//allows the user to selected card
 		//cardValue is the point value of the selected card
 		function selectUnselect(cardValue)
