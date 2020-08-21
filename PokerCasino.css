@@ -61,7 +61,7 @@ button
 	width: 100%;
 }
 		
-#comboTable, th, td
+#comboTable th, #comboTable td
 {
 	border: solid black;
 	text-align: center;
