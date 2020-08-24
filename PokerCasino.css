@@ -98,4 +98,5 @@ button:disabled
 {
 	color: white;
 	background: gray;
+	cursor: auto;
 }
