@@ -51,9 +51,9 @@
 			replaceHand.disabled = true; 
 			
 			//deals cards from top of the deck to board
-			for (var i = 0; i < BOARD_SIZE; i++)
+			for (let i = 0; i < BOARD_SIZE; i++)
 			{
-				var theTD = jBoard.insertCell(i);
+				let theTD = jBoard.insertCell(i);
 				cardsOnBoard.push(dealCard(myDeck)); 
 				theTD.innerHTML = "<img src = 'card images/" + cardsOnBoard[i].cardImg + "'/>";
 				theTD.setAttribute("onclick", "selectUnselect(this);");
@@ -66,7 +66,7 @@
 		function selectUnselect(cardValue)
 		{
 			//loop through the board of cards 
-			for (var i = 0; i < jBoard.cells.length; i++)
+			for (let i = 0; i < jBoard.cells.length; i++)
 			{
 				if (jBoard.cells[i] == cardValue)
 				{
@@ -86,7 +86,7 @@
 		//replace the card at the index
 		function replaceCard(index)
 		{
-			var theTD = jBoard.cells[index];
+			let theTD = jBoard.cells[index];
 			
 			//while there are still cards, it will deal the top card
 			if (myDeck.length > 0)
@@ -108,8 +108,8 @@
 		//debug function to make sure all the indexes of each card is correct
 		function getIndexesOfCardsOnBoard()
 		{
-			var selectedIndexes = [];
-			for (var i = 0; i < BOARD_SIZE; i++)
+			let selectedIndexes = [];
+			for (let i = 0; i < BOARD_SIZE; i++)
 			{
 				if (cardsOnBoard[i] != null)
 				{
@@ -123,11 +123,11 @@
 		//gets all the cards that were selected
 		function getSelectedIndexes()
 		{
-			var selectedIndexes = [];
+			let selectedIndexes = [];
 			
 			//loops through all the cards on board
 			//take all the selected cards and push it in the array to return in the end
-			for (var i = 0; i < BOARD_SIZE; i++)
+			for (let i = 0; i < BOARD_SIZE; i++)
 			{
 				if (selected[i] && cardsOnBoard != null)
 				{
@@ -137,101 +137,104 @@
 			return selectedIndexes;
 		}
 		
+		function insertionSortPointValue()
+		{
+			for (let i = 1; i < BOARD_SIZE; i++) 
+			{
+				let key = cardsOnBoard[i].pointValue;
+				let j = i - 1;
+				while (j >= 0 && cardsOnBoard[j].pointValue > key) {
+					cardsOnBoard[j + 1].pointValue = cardsOnBoard[j].pointValue;
+					j = j - 1;
+				}
+				cardsOnBoard[j + 1].pointValue = key;
+			}
+			
+		}
+		
+		function insertionSortSuit()
+		{
+			for (let i = 1; i < BOARD_SIZE; i++) 
+			{
+				let key = cardsOnBoard[i].suit;
+				let j = i - 1;
+				while (j >= 0 && cardsOnBoard[j].suit > key) {
+					cardsOnBoard[j + 1].suit = cardsOnBoard[j].suit;
+					j = j - 1;
+				}
+				cardsOnBoard[j + 1].suit = key;
+			}
+		}
+		
 		//returns if there are two pairs of cards with the same value 
 		function containsTwoPairs()
 		{
-			for(var i = 0; i < cardsOnBoard.length - 1; i++)
+			const map = {};
+			let firstPair = false;
+			let notRepeat;
+			for (let i = 0; i < cardsOnBoard.length; i++)
 			{
-				var card1 = cardsOnBoard[i];
-				var rank1 = card1.rank;
-				
-				for(var j = i + 1; j < cardsOnBoard.length; j++)
-				{	
-					var card2 = cardsOnBoard[j];
-					var rank2 = card2.rank; 
-					
-					if (rank2 == rank1)
-					{
-						for(var k =  i + 1; k < cardsOnBoard.length - 1; k++)
-						{
-							var card3 = cardsOnBoard[k];
-							var rank3 = card3.rank;
-								
-							for(var a = k + 1; a < cardsOnBoard.length; a++)
-							{	
-								var card4 = cardsOnBoard[a];
-								var rank4 = card4.rank; 
-								
-								//ensures that you do not get a triple or quad
-								if (rank1 != rank3 && rank3 == rank4)
-								{
-									return true;
-								}	
-							}	
-						}	
-					}	
-				}	
-			}							
+				const dupe = cardsOnBoard[i].pointValue;
+				if (dupe in map && !firstPair)
+				{
+					firstPair = true;
+					notRepeat = dupe;
+				}
+				if (dupe in map && firstPair && dupe != notRepeat)
+				{
+					return true;
+				}
+				map[dupe] = i;
+			}
 			return false;
 		}
 		
 		//returns if there are three cards with the same point value
 		function containsTriple()
 		{
-			for(var i = 0; i < cardsOnBoard.length - 2; i++)
-			{ 
-				var card1 = cardsOnBoard[i];
-				var rank1 = card1.rank;
-
-				for(var j = i + 1; j < cardsOnBoard.length - 1; j++)
+			let counter = 0;
+			for (let i = 1; i < cardsOnBoard.length; i++)
+			{
+				if (cardsOnBoard[i-1].pointValue == cardsOnBoard[i].pointValue)
 				{
-					var card2 = cardsOnBoard[j];
-					var rank2 = card2.rank;
-
-					for(var k = j + 1; k < cardsOnBoard.length; k++)
-					{	
-						var card3 = cardsOnBoard[k];
-						var rank3 = card3.rank;
-
-						if (rank1 == rank2 && rank2 == rank3) 
-						{
-							return true;
-						}
-					}	
+					counter++;
+				}
+				else
+				{
+					counter = 0;
+				}
+				if (counter == 2)
+				{
+					return true;
 				}
 			}
 			return false;
+			
 		}
 
 		//returns if there are four cards with the same point value
 		function containsFourOfKind()
 		{
-			for(var i = 0; i < cardsOnBoard.length - 3; i++)
-			{ 
-				var card1 = cardsOnBoard[i];
-				var rank1 = card1.rank;
-
-				for(var j = i + 1; j < cardsOnBoard.length - 2; j++)
+			let counter = 0;
+			
+			for (let i = 0; i < cardsOnBoard.length; i++)
+			{
+				console.log(cardsOnBoard[i].pointValue);
+			}
+			
+			for (let i = 1; i < cardsOnBoard.length; i++)
+			{
+				if (cardsOnBoard[i-1].pointValue == cardsOnBoard[i].pointValue)
 				{
-					var card2 = cardsOnBoard[j];
-					var rank2 = card2.rank;
-
-					for(var k = j + 1; k < cardsOnBoard.length - 1; k++)
-					{	
-						var card3 = cardsOnBoard[k];
-						var rank3 = card3.rank;
-						
-						for(var n = k + 1; n < cardsOnBoard.length; n++)
-						{	
-							var card4 = cardsOnBoard[n];
-							var rank4 = card4.rank;	
-							
-							if (rank1 == rank2 && rank2 == rank3 && rank3 == rank4) 
-							{
-								return true;
-							}
-						}
-					}	
+					counter++;
+				}
+				else
+				{
+					counter = 0;
+				}
+				if (counter == 3)
+				{
+					return true;
 				}
 			}
 			return false;
@@ -241,149 +244,82 @@
 		//returns if all 5 cards is a straight
 		function containsStraight()
 		{	
-			for(var i = 0; i < cardsOnBoard.length; i++)
-			{ 
-				var card1 = cardsOnBoard[i];
-				var rank1 = card1.pointValue;
-				
-				for(var j = 0; j < cardsOnBoard.length; j++)
+			let counter = 0;
+			for (let i = 1; i < cardsOnBoard.length; i++)
+			{
+				if (cardsOnBoard[i-1].pointValue + 1 == cardsOnBoard[i].pointValue)
 				{
-					var card2 = cardsOnBoard[j];
-					var rank2 = card2.pointValue;
-				
-					for(var k = 0; k < cardsOnBoard.length; k++)
-					{
-						var card3 = cardsOnBoard[k];
-						var rank3 = card3.pointValue;
-						
-						for(var n = 0; n < cardsOnBoard.length; n++)
-						{
-							var card4 = cardsOnBoard[n];
-							var rank4 = card4.pointValue;
-							
-							for(var m = 0; m < cardsOnBoard.length; m++)
-							{
-								var card5 = cardsOnBoard[m];
-								var rank5 = card5.pointValue;
-								
-								if (rank1 < rank2 && rank1 < rank3 && rank1 < rank4 && rank1 < rank5)
-								{
-									if (rank2 == rank1 + 1 && rank3 == rank1 + 2 && rank4 == rank1 + 3 && rank5 == rank1 + 4)
-									{
-										return true;
-												
-									}	
-								}
-							}	
-						}	
-					}	
-				} 	
+					counter++;
+				}
+				else if (cardsOnBoard[i-1].pointValue == cardsOnBoard[i].pointValue)
+				{
+					counter = counter;
+				}
+				else
+				{
+					counter = 0;
+				}
+				if (counter == 4)
+				{
+					return true;
+				}
 			}
 			return false;
 		} 
-		
-		
-		/*
-		//returns if all 5 cards is a straight
-		//insertion sort alternative
-		function containsStraight()
-		{	
-			var txd = cardsOnBoard;
-	
-			for(var i = 1; i < txd.length; i++)
-			{ 
-				var card1 = txd[i];
-				var rank1 = card1.pointValue;
-				
-				var j = i - 1;
-				var temp = rank1;
-				
-				while (j >= 0 && txd[j].pointValue > temp)
-				{
-					txd[j + 1] = txd[j];
-					j--;
-				}
-				txd[j+1] = temp;
-			}
-			for(i = 1; i < txd.length; i++)
-			{
-				if(txd[i-1].pointValue + 1 != txd[i].pointValue)
-				{
-					return false;
-				}
-			}
-			return true;
-		} 
-		*/
 		
 		function containsFlush()
 		{			
-			var card1 = cardsOnBoard[0];
-			var suit1 = card1.suit;
-			
-			var card2 = cardsOnBoard[1];
-			var suit2 = card2.suit;
-			
-			var card3 = cardsOnBoard[2];
-			var suit3 = card3.suit;
-			
-			var card4 = cardsOnBoard[3];
-			var suit4 = card4.suit;
-			
-			var card5 = cardsOnBoard[4];
-			var suit5 = card5.suit;
-			
-			if (suit1 == suit2 && suit2 == suit3 && suit3 == suit4 && suit4 == suit5) 
+			insertionSortSuit();
+			let counter = 0;
+			for (let i = 1; i < cardsOnBoard.length; i++)
 			{
-				return true;
-			}	
-		
+				if (cardsOnBoard[i-1].suit == cardsOnBoard[i].suit)
+				{
+					counter++;
+				}
+				else
+				{
+					counter = 0;
+				}
+				if (counter == 4)
+				{
+					insertionSortPointValue();
+					return true;
+				}
+			}
+			insertionSortPointValue();
 			return false;
-
 		}
 
 		function containsFullHouse()
 		{
-			for(var i = 0; i < cardsOnBoard.length - 2; i++)
+			let counter = 0;
+			let triplePair = false;
+			let doublePair = false;
+			for (let i = 1; i < cardsOnBoard.length; i++)
 			{
-				var card1 = cardsOnBoard[i];
-				var rank1 = card1.rank;
-
-				for(var j = i + 1; j < cardsOnBoard.length - 1; j++)
+				if (cardsOnBoard[i-1].pointValue == cardsOnBoard[i].pointValue)
 				{
-					var card2 = cardsOnBoard[j];
-					var rank2 = card2.rank;
-
-					for(var k = j + 1; k < cardsOnBoard.length; k++)
-					{	
-						var card3 = cardsOnBoard[k];
-						var rank3 = card3.rank;
-								
-						if (rank1 == rank2 && rank2 == rank3) 
-						{
-							for (var n = 0; n < cardsOnBoard.length - 1; n++)
-							{
-								var card4 = cardsOnBoard[n];
-								var rank4 = card4.rank;
-								
-								if (rank4 != rank1)
-								{
-									for (var m = n + 1; m < cardsOnBoard.length; m++)
-									{
-										var card5 = cardsOnBoard[m];
-										var rank5 = card5.rank;
-										
-										if (rank4 == rank5)
-										{
-											return true;
-										}	
-									}	
-								}	
-							}	
-						}	
-					}	
-				}	
-			}							
+					counter++;
+				}
+				if (counter = 3)
+				{
+					triplePair = true;
+					counter = 0;
+				}
+				else if (counter = 2)
+				{
+					doublePair = true;
+				}
+				else
+				{
+					counter = 0;
+				}
+				if (triplePair && doublePair)
+				{
+					return true;
+				}
+			}
 			return false;
 		} 
 
@@ -395,51 +331,35 @@
 			}
 			return false;
 		} 
-
+		
 		function containRoyalStraightFlush()
-		{
-			for(var i = 0; i < cardsOnBoard.length; i++)
-			{ 
-				var card1 = cardsOnBoard[i];
-				var rank1 = card1.pointValue;
-				
-				for(var j = 0; j < cardsOnBoard.length; j++)
+		{	
+			insertionSortSuit();
+			let counter = 0;
+			for (let i = 1; i < cardsOnBoard.length; i++)
+			{
+				if (cardsOnBoard[i-1].pointValue >= 9)
 				{
-					var card2 = cardsOnBoard[j];
-					var rank2 = card2.pointValue;
-				
-					for(var k = 0; k < cardsOnBoard.length; k++)
+					if (cardsOnBoard[i-1].pointValue + 1 == cardsOnBoard[i].pointValue)
 					{
-						var card3 = cardsOnBoard[k];
-						var rank3 = card3.pointValue;
-						
-						for(var n = 0; n < cardsOnBoard.length; n++)
+						if (cardsOnBoard[i-1].suit == cardsOnBoard[i].suit)
 						{
-							var card4 = cardsOnBoard[n];
-							var rank4 = card4.pointValue;
-							
-							for(var m = 0; m < cardsOnBoard.length; m++)
-							{
-								var card5 = cardsOnBoard[m];
-								var rank5 = card5.pointValue;
-								
-								if (rank1 == 9 && rank2 == 10 && rank3 == 11 && rank4 == 12 && rank5 == 13)
-								{
-									if (containsFlush())
-									{
-										return true;	
-									}	
-								}	
-							}	
+							counter++;
 						}	
-					}	
-				}	
+					}
+					if (counter == 4)
+					{
+						return true;
+					}
+				}
 			}
+			insertionSortPointValue();
 			return false;
 		} 
 		
 		function updateMoney()
 		{	
+			insertionSortPointValue();
 			if (containRoyalStraightFlush())
 			{
 				betMoney = betMoney * 250;
@@ -521,7 +441,7 @@
 		
 		function replace()
 		{
-			var selectedIndexes = getSelectedIndexes();
+			let selectedIndexes = getSelectedIndexes();
 			replaceCards.disabled = true;
 			replaceHand.disabled = false;
 			betOne.disabled = true;
@@ -529,7 +449,7 @@
 			betHundred.disabled = true;
 			betThousand.disabled = true; 
 			
-			for (var i = 0; i < selectedIndexes.length; i++)
+			for (let i = 0; i < selectedIndexes.length; i++)
 			{
 				replaceCard(selectedIndexes[i]);
 			}
@@ -551,9 +471,9 @@
 			betHundred.disabled = false;
 			betThousand.disabled = false; 
 			
-			for(var i = 0; i < BOARD_SIZE; i++)
+			for(let i = 0; i < BOARD_SIZE; i++)
 			{
-				var theTD = jBoard.cells[i];
+				let theTD = jBoard.cells[i];
 				selected[i] = true;
 				replaceCard(i);
 			}
@@ -577,9 +497,9 @@
 			betHundred.disabled = false;
 			betThousand.disabled = false; 
 			
-			for(var i = 0; i < BOARD_SIZE; i++)
+			for(let i = 0; i < BOARD_SIZE; i++)
 			{
-				var theTD = jBoard.cells[i];
+				let theTD = jBoard.cells[i];
 				selected[i] = true;
 				replaceCard(i);
 			}
@@ -658,7 +578,7 @@
 						</tr>	
 					</table>
 				</span>	
-			</div>
+			</div> 
 			
 			<div id = "pokerboard">
 				<span>
@@ -671,11 +591,11 @@
 
 				<div id = "game_status"></div> 
 			</div>
-			
+		</h1>	
 			<div id = "fixHand">
 				<span>
 					<button id = "replaceCards" onclick = "replace();"> Replace </button>
-					<button id = "replaceHand" onclick = "newHand();"> Deal New Hand </button><br/>
+					<button id = "replaceHand" onclick = "newHand();"> Deal New Hand </button>
 					<button id = "restartGame" onclick = "restart();"> Restart Game</button>
 				</span>	<br/>
 				<span>
@@ -692,6 +612,6 @@
 					
 				</span>
 			</div><br/><br/>
-		</h1>
+		
 	</body>
 </html>
