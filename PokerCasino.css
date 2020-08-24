@@ -84,7 +84,13 @@ button
 
 button:hover
 {
+	color: black;
+	background: yellow;
+	
+}
+
+button:disabled
+{
 	color: white;
 	background: gray;
-	
 }
