@@ -1,0 +1,114 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+
+body{
+	background-color: green;
+	cursor: default;	
+}
+
+header{
+    background: white;
+    padding: 20px;
+    text-align: center;
+    font-family: sans-serif;
+}
+
+header > h1{
+	border-bottom: 4px dotted black;
+}
+
+header > p{
+	padding: 5px;
+	font-size: 20px;
+}
+
+#theTable{
+	padding: 2%;
+	margin: auto;	
+	vertical-align: top;
+}
+
+#comboTable{
+	text-align:center;
+	margin-left: auto;
+	margin-right: auto;
+	border-collapse: collapse;
+	background-color: white;	
+	width: 80%;
+}
+		
+.table{
+	border: solid black;
+	padding: 10px;
+	font-family: sans-serif;
+}
+
+#pokerboard{
+	margin-left: auto;
+	margin-right: auto;
+	cursor: pointer;
+}
+
+#game_status{
+	text-align: center;
+	color:white;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 30px;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	padding: 5px;
+}
+
+#fixHand{
+	text-align: center;	
+}
+
+.buttons{	
+	font: bold;
+	font-size: 20px;
+	cursor: pointer;
+	background: white;
+	color: black;
+	padding: 5px;
+	border-radius: 10%;
+}
+
+.buttons:hover{
+	color: black;
+	background: yellow;
+	transition: all 0.3s ease;
+    box-shadow: 0 0 10px lightblue;
+}
+
+.buttons:disabled{
+	color: white;
+	background: gray;
+	cursor: auto;
+	box-shadow: none;
+}
+
+#money{	
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 1%;
+	margin-bottom: 1%;
+	background-color: white;
+	border: solid black;
+	width: 60%;
+	font-size: 30px;
+	color: orange;
+    font-family: sans-serif;
+	text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	padding: 1%;
+	text-align: center;
+}
+
+#bet{
+	text-align: center;
+}
+
+
+
+
