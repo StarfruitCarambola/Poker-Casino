@@ -1,8 +1,7 @@
 # Poker-Casino
 By Raymond Kwok
 
-A Poker High or Low Game based on the one from real life casinos
-No malicious attempt of gambling.
+A Poker High or Low Game 
 
 Playing the Game
 ---------------------
