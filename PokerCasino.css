@@ -2,6 +2,7 @@
 	margin: 0;
 	padding: 0;
 }
+
 body
 {
 	background-image: url("card images/pokerTable.jpg");
@@ -56,6 +57,8 @@ button
 	cursor: pointer;
 	background: white;
 	color: black;
+	padding: 5px;
+	border-radius: 10%;
 }
 		
 #comboTable
@@ -95,7 +98,8 @@ button:hover
 {
 	color: black;
 	background: yellow;
-	
+	transition: all 0.3s ease;
+    box-shadow: 0 0 10px lightblue;
 }
 
 button:disabled
@@ -103,4 +107,5 @@ button:disabled
 	color: white;
 	background: gray;
 	cursor: auto;
+	box-shadow: none;
 }
