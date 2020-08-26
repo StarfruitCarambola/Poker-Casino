@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--Raymond Kwok-->
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title> Poker Casino Game </title>
+		<link rel = "stylesheet" type = "text/css" href = "styles.css" />
+		<script src = "utilities.js"></script>
+		<script src = "cardengine.js"></script>
+		<script src = "poker.js"></script>
+	</head>
+	<body onload = "initialize();">
+		<header>
+			<h1 id = "theTitle"> Poker Casino! </h1>
+			<p id = "instructions"> Place a bet and click on the cards you want to replace. </p>
+		</header>
+		<div id = "theTable">	
+			<table id = "comboTable">
+				<tr>
+					<th colspan = "4" class = "table" id = "tableHead"> Poker Comboes </th>
+				</tr> 
+				<tr>
+					<td class = "table"> Royal Straight Flush </td> 
+					<td class = "table"> x250 </td>
+					<td class = "table"> Flush </td>
+					<td class = "table"> x5 </td>
+				</tr>
+				<tr>
+					<td class = "table"> Straight Flush </td>
+					<td class = "table"> x25 </td>
+					<td class = "table"> Straight </td>
+					<td class = "table"> x3 </td>
+				</tr>
+				<tr>
+					<td class = "table"> Four Of a Kind </td> 
+					<td class = "table"> x20 </td>
+					<td class = "table"> Three Of a Kind </td>
+					<td class = "table"> x2 </td>
+				</tr>
+				<tr>
+					<td class = "table"> Full House </td>
+					<td class = "table"> x10 </td>
+					<td class = "table"> Two Pairs </td>
+					<td class = "table"> x1 </td>
+				</tr>	
+			</table>
+		</div> 
+		
+		<div >
+			<table id = "pokerboard">
+				<tr id = "board">
+				
+				</tr>
+			</table>
+		</div>
+
+		<p id = "game_status"> Make your decision! </p> 
+
+		<div id = "fixHand">
+			<button class = "buttons" id = "replaceCards" onclick = "replace();"> Replace </button>
+			<button class = "buttons" id = "replaceHand" onclick = "newHand();"> Deal New Hand </button>
+			<button class = "buttons" id = "restartGame" onclick = "restart();"> Restart Game</button>
+		</div>
+		<div id = "money">
+			<span id = "set_amount"></span>
+			<span id = "bet_amount"></span>
+		</div>
+		<div id = "bet">
+			<span>	
+				<button class = "buttons" id = "betTen" onclick = "bet(10);"> $10 </button>
+				<button class = "buttons" id = "betHundred" onclick = "bet(100);"> $100 </button>
+				<button class = "buttons" id = "betThousand" onclick = "bet(1000);"> $1000 </button>
+				<button class = "buttons" id = "betOne" onclick = "bet(10000);"> $10000 </button>
+				<button class = "buttons" id = "betZero" onclick = "resetMoney()"> Reset Amount </button>
+			</span>
+		</div>
+	</body>
+</html>
