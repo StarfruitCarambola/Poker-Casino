@@ -207,11 +207,6 @@ function containsFourOfKind()
 {
 	let counter = 0;
 	
-	for (let i = 0; i < cardsOnBoard.length; i++)
-	{
-		console.log(cardsOnBoard[i].pointValue);
-	}
-	
 	for (let i = 1; i < cardsOnBoard.length; i++)
 	{
 		if (cardsOnBoard[i-1].pointValue == cardsOnBoard[i].pointValue)
@@ -283,27 +278,24 @@ function containsFlush()
 
 function containsFullHouse()
 {
+	let i = 0;
 	let counter = 0;
 	let triplePair = false;
 	let doublePair = false;
-	for (let i = 1; i < cardsOnBoard.length; i++)
+	while (i < cardsOnBoard.length - 2)
 	{
-		if (cardsOnBoard[i-1].pointValue == cardsOnBoard[i].pointValue)
-		{
-			counter++;
-		}
-		if (counter = 3)
+		if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue && cardsOnBoard[i].pointValue == cardsOnBoard[i+2].pointValue)
 		{
 			triplePair = true;
-			counter = 0;
+			i = i + 3;
 		}
-		else if (counter = 2)
+		else if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue)
 		{
 			doublePair = true;
+			i = i + 2;
 		}
-		else
-		{
-			counter = 0;
+		else{
+			i++;
 		}
 		if (triplePair && doublePair)
 		{
@@ -354,7 +346,7 @@ function updateMoney()
 	{
 		betMoney = betMoney * 250;
 		accountMoney = accountMoney + betMoney;
-		jGameStatus.innerHTML = "Royal Straight Flush! <br> You got $" + betMoney;
+		jGameStatus.innerHTML = "Royal Straight Flush! You got $" + betMoney + "!";
 		display();		
 		return true;
 	}
@@ -363,7 +355,7 @@ function updateMoney()
 	{
 		betMoney = betMoney * 25;
 		accountMoney = accountMoney + betMoney;
-		jGameStatus.innerHTML = "Straight Flush! <br> You got $" + betMoney;
+		jGameStatus.innerHTML = "Straight Flush! You got $" + betMoney + "!";
 		display();
 		return true;
 	} 
@@ -372,7 +364,7 @@ function updateMoney()
 	{
 		betMoney = betMoney * 20;
 		accountMoney = accountMoney + betMoney;
-		jGameStatus.innerHTML = "Four Of a Kind! <br> You got $" + betMoney;
+		jGameStatus.innerHTML = "Four Of a Kind! You got $" + betMoney + "!";
 		display();
 		return true;
 	} 
@@ -381,7 +373,7 @@ function updateMoney()
 	{
 		betMoney = betMoney * 10;
 		accountMoney = accountMoney + betMoney;
-		jGameStatus.innerHTML = "Full House! <br> You got $" + betMoney;
+		jGameStatus.innerHTML = "Full House! <br> You got $" + betMoney + "!";
 		display();
 		return true;
 	}  
@@ -390,7 +382,7 @@ function updateMoney()
 	{
 		betMoney = betMoney * 5;
 		accountMoney = accountMoney + betMoney;
-		jGameStatus.innerHTML = "Flush! <br> You got $" + betMoney;
+		jGameStatus.innerHTML = "Flush! You got $" + betMoney + "!";
 		display();
 		return true;
 	}  
@@ -399,7 +391,7 @@ function updateMoney()
 	{
 		betMoney = betMoney * 3;
 		accountMoney = accountMoney + betMoney;
-		jGameStatus.innerHTML = "Straight! <br> You got $" + betMoney + ".";
+		jGameStatus.innerHTML = "Straight! You got $" + betMoney + ".";
 		display();
 		return true;
 	} 
@@ -408,7 +400,7 @@ function updateMoney()
 	{
 		betMoney = betMoney * 2;
 		accountMoney = accountMoney + betMoney;
-		jGameStatus.innerHTML = "Triple! <br> You got $" + betMoney;
+		jGameStatus.innerHTML = "Triple! You got $" + betMoney + "!";
 		display();
 		return true;
 	} 
@@ -417,14 +409,14 @@ function updateMoney()
 	{
 		betMoney = betMoney * 1;
 		accountMoney = accountMoney + betMoney;
-		jGameStatus.innerHTML = "Two Pairs! <br> You got $" + betMoney;
+		jGameStatus.innerHTML = "Two Pairs! You got $" + betMoney + "!";
 		display();
 		return true;
 	} 
 	else
 	{
 		accountMoney = accountMoney - betMoney;
-		jGameStatus.innerHTML = "No combos! <br> You've lost $" + betMoney;
+		jGameStatus.innerHTML = "No combos! You've lost $" + betMoney + "...";
 		display();
 	}
 }
@@ -438,6 +430,7 @@ function replace()
 	betTen.disabled = true;
 	betHundred.disabled = true;
 	betThousand.disabled = true; 
+	betZero.disabled = true;
 	
 	for (let i = 0; i < selectedIndexes.length; i++)
 	{
@@ -459,7 +452,8 @@ function newHand()
 	betOne.disabled = false;			
 	betTen.disabled = false;
 	betHundred.disabled = false;
-	betThousand.disabled = false; 
+	betThousand.disabled = false;
+	betZero.disabled = false;	
 	
 	for(let i = 0; i < BOARD_SIZE; i++)
 	{
@@ -468,7 +462,7 @@ function newHand()
 		replaceCard(i);
 	}
 	
-	jGameStatus.innerHTML = "";
+	jGameStatus.innerHTML = "Make your decision!";
 }
 
 function restart()
@@ -494,7 +488,7 @@ function restart()
 		replaceCard(i);
 	}
 	
-	jGameStatus.innerHTML = "";
+	jGameStatus.innerHTML = "Make your decision!";
 }
 
 
