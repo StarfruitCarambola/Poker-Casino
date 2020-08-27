@@ -282,12 +282,15 @@ function containsFullHouse()
 	let counter = 0;
 	let triplePair = false;
 	let doublePair = false;
-	while (i < cardsOnBoard.length - 2)
+	while (i < cardsOnBoard.length - 1)
 	{
-		if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue && cardsOnBoard[i].pointValue == cardsOnBoard[i+2].pointValue)
+		if (i < cardsOnBoard.length - 2)
 		{
-			triplePair = true;
-			i = i + 3;
+			if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue && cardsOnBoard[i].pointValue == cardsOnBoard[i+2].pointValue)
+			{
+				triplePair = true;
+				i = i + 3;
+			}
 		}
 		else if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue)
 		{
