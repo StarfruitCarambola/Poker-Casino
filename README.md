@@ -3,10 +3,18 @@ By Raymond Kwok
 
 A Poker High or Low Game 
 
+To Play the Game:
+------------------
+https://raymondkwok7877.github.io/Rock-Paper-Scissors/
+
+Description:
+--------------
+A side-project I built myself using HTML, CSS, and JS. 
+
 Playing the Game
 ---------------------
 - Click on the html file that says "Poker Casino.html".
-- The chart of left shows the point multipliers your bet can increase by if you get that combo.
+- The chart shows the point multipliers your bet can increase by if you get that combo.
 - You start off with $2000 in the beginning. 
 - To bet, click on any of the money buttons to increase how much you bet by that amount. 
 - You can click on them as many times as you want as long as you do not exceed your budget.
