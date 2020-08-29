@@ -1,8 +1,6 @@
 # Poker-Casino
 By Raymond Kwok
 
-A Poker High or Low Game 
-
 To Play the Game:
 ------------------
 https://raymondkwok7877.github.io/Rock-Paper-Scissors/
