@@ -253,8 +253,10 @@ function containsStraight()
 } 
 
 function containsFlush()
-{			
-	insertionSortSuit();
+{		
+	if (cardsOnBoard.length > 5){
+		insertionSortSuit();
+	}
 	let counter = 0;
 	for (let i = 1; i < cardsOnBoard.length; i++)
 	{
@@ -268,7 +270,9 @@ function containsFlush()
 		}
 		if (counter == 4)
 		{
-			insertionSortPointValue();
+			if (cardsOnBoard.length > 5){
+				insertionSortPointValue();
+			}
 			return true;
 		}
 	}
@@ -282,29 +286,27 @@ function containsFullHouse()
 	let counter = 0;
 	let triplePair = false;
 	let doublePair = false;
-	while (i < cardsOnBoard.length - 1)
-	{
-		if (i < cardsOnBoard.length - 2)
-		{
-			if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue && cardsOnBoard[i].pointValue == cardsOnBoard[i+2].pointValue)
-			{
-				triplePair = true;
-				i = i + 3;
-			}
+	let firstCombo = -1;
+	
+	for (let i = 0; i < cardsOnBoard.length - 2; i++){
+		if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue && cardsOnBoard[i].pointValue == cardsOnBoard[i+2].pointValue){
+			firstCombo = cardsOnBoard[i].pointValue;
+			triplePair = true;
+			break;
 		}
-		else if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue)
-		{
+	}
+	
+	if (triplePair == false){
+		return false;
+	}
+	
+	for (let i = 0; i < cardsOnBoard.length - 2; i++){
+		if (cardsOnBoard[i].pointValue == cardsOnBoard[i+1].pointValue && cardsOnBoard[i].pointValue != firstCombo){
 			doublePair = true;
-			i = i + 2;
-		}
-		else{
-			i++;
-		}
-		if (triplePair && doublePair)
-		{
 			return true;
 		}
 	}
+	
 	return false;
 } 
 
